@@ -1,6 +1,6 @@
 函数组件监听自定义事件问题 
 React每次渲染都触发组件内的监听，导致触发自定义事件时同时触发多个（触发数量由该组件被渲染多少次决定）
-使用useEffect解决该问题，首先如果useEffect的第二个参数传入[]可以使得该useEffect内的函数只执行一次，但是如果要在函数内操作useState定义的数据时时获取不到的，如果不传入[],那么useEffect内的函数会随着每次渲染而触，如果再useEffect内添加自定义事件的监听时，就会使得监听事件变成多个。
+使用useEffect解决该问题，首先如果useEffect的第二个参数传入[]可以使得该useEffect内的函数只执行一次，但是如果要在useEffect内操作useState定义的数据时是获取不到的，如果不传入[],那么useEffect内的函数会随着每次渲染而触，如果再useEffect内添加自定义事件的监听时，就会使得监听事件变成多个。
 解决方法：
 var [cwidth, setCwidth] = useState(window.innerWidth * 0.6)
 var [cheight, setCheight] = useState(window.innerHeight * 0.8)
