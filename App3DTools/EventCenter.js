@@ -1,5 +1,5 @@
 
-const eventName = ['load_models', 'tour_end', 'load_end', 'over_look', 'tour', 'san_pos','change_cam_pos','tour_pause','scale_santable']
+const eventName = ['load_models', 'load_end'  ]
 let events = []
 eventName.forEach(name => {
     events.push(new CustomEvent(name, { detail: { data: {} } }))
