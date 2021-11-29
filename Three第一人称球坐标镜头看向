@@ -1,0 +1,26 @@
+ let lon = 0
+ let lat = 0
+ const targetPosition = new Vector3();
+ let cameraDirection = new Vector3()
+ const spherical = new Spherical()
+ 
+ camera.getWorldDirection(cameraDirection)
+ spherical.setFromVector3(cameraDirection)
+ lon = MathUtils.radToDeg(spherical.theta)
+ lat = MathUtils.radToDeg(spherical.phi)
+//e.movementX来自鼠标移动事件
+ lon += e.movementX / 20;
+ //threejs球坐标极坐标：y轴正方向为0，y轴反方向为Math.PI
+ //y轴反向（向上为正向下为负->进行反转）：鼠标向下拨动球坐标的极坐标增大，向上拨动球坐标的极坐标减少
+ lat += -e.movementY / 20
+ lat = Math.max(5, Math.min(175, lat));
+
+ let phi = MathUtils.degToRad(lat);
+ const theta = MathUtils.degToRad(lon);
+
+ phi = MathUtils.mapLinear(phi, 0, Math.PI, this.verticalMin, this.verticalMax);
+
+ const position = camera.position.clone();
+ targetPosition.setFromSphericalCoords(1, phi, theta).add(position);
+
+ camera.lookAt(targetPosition);
