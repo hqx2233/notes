@@ -1,0 +1,45 @@
+// 假设已知帧A和帧B的旋转矩阵 (R_A, R_B) 和位移向量 (T_A, T_B)
+// 位移向量 T_A 和 T_B 表示的是在指北坐标系下的绝对位置
+
+// 帧A的旋转矩阵
+const R_A = new THREE.Matrix4();
+R_A.set(
+    /* 填入帧A的旋转矩阵的 3x3 元素 */
+    r11_A, r12_A, r13_A, 0,
+    r21_A, r22_A, r23_A, 0,
+    r31_A, r32_A, r33_A, 0,
+    0,      0,      0,      1
+);
+const T_A = new THREE.Vector3(tAx, tAy, tAz);  // 指北坐标系下的位移向量
+
+// 帧B的旋转矩阵，可使用makeRotationFromEuler方法直接设置旋转矩阵
+const R_B = new THREE.Matrix4();
+R_B.set(
+    /* 填入帧B的旋转矩阵的 3x3 元素 */
+    r11_B, r12_B, r13_B, 0,
+    r21_B, r22_B, r23_B, 0,
+    r31_B, r32_B, r33_B, 0,
+    0,      0,      0,      1
+);
+const T_B = new THREE.Vector3(tBx, tBy, tBz);  // 指北坐标系下的位移向量
+
+// 构建齐次变换矩阵 T_A^B (从帧A到帧B的直接转换)
+const T_A_B = new THREE.Matrix4();
+T_A_B.copy(R_B).invert();  // 使用 R_B 的逆
+
+// 计算 T_B 在 R_B^-1 下的相对位移，并设置为 T_A_B 的平移部分
+//指北坐标系下的位置偏移量，到帧B的本地坐标系的偏移量的计算
+const relativePosition = T_A.clone().sub(T_B).applyMatrix4(T_A_B);
+T_A_B.setPosition(relativePosition);
+
+// 将帧A的旋转矩阵叠加到转换矩阵中
+T_A_B.multiply(R_A);
+
+// 假设有一个点在帧A的自车坐标系下的位置
+const pointInA = new THREE.Vector4(xA, yA, zA, 1);
+
+// 进行坐标转换到帧B的自车坐标系
+const pointInB = pointInA.clone().applyMatrix4(T_A_B);
+
+// 输出结果
+console.log("Point in frame B:", pointInB.x, pointInB.y, pointInB.z);
